@@ -46,7 +46,7 @@ class _TopNewsScreenState extends State<TopNewsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Favorites'),
+        title: Text('Top News'),
       ),
       body: ListView.builder(
         

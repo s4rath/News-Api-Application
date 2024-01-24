@@ -12,14 +12,30 @@ class FavoritesScreen extends StatefulWidget {
   _FavoritesScreenState createState() => _FavoritesScreenState();
 }
 
-class _FavoritesScreenState extends State<FavoritesScreen> {
+class _FavoritesScreenState extends State<FavoritesScreen> with WidgetsBindingObserver{
   List<Article> favoriteArticles = []; // To store favorite articles
 
   @override
   void initState() {
     super.initState();
     loadFavorites();
+    WidgetsBinding.instance.addObserver(this);
   }
+
+   @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    if (state == AppLifecycleState.resumed) {
+      loadFavorites();
+    }
+  }
+
 
   Future<void> loadFavorites() async {
     List<String> favoritesJson = await FavoritesManager().getFavorites();
@@ -41,7 +57,11 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
       appBar: AppBar(
         title: Text('Favorites'),
       ),
-      body: ListView.builder(
+      body:favoriteArticles.isEmpty
+        ? Center(
+            child: Text('No favorite articles available.'),
+          )
+        : ListView.builder(
         itemCount: favoriteArticles.length,
         itemBuilder: (context, index) {
           final Article article = favoriteArticles[index];
@@ -63,7 +83,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                       sourceName: article.sourceName,
                       publishedAt: article.publishedAt,
                       content: article.content);
-                  Navigator.push(
+                  final result=Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) {
@@ -71,6 +91,12 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                       },
                     ),
                   );
+                  if (result!=null){
+                    setState(() {
+                      
+                    loadFavorites();
+                    });
+                  }
               },
               child: Container(
                  height: 100,

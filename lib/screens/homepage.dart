@@ -106,7 +106,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                     Radius.circular(10.0),
                                   ),
                                   child: Hero(
-                                    tag: "imgTag",
+                                    tag: "imgiTag",
                                     child: Container(
                                       // height: 54,
                                       // width: 51,
